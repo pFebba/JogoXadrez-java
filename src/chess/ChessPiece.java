@@ -25,7 +25,7 @@ public abstract class ChessPiece extends Piece{
 		moveCount--;
 	}
 	
-	public int moveCount() {
+	public int getMoveCount() {
 		return moveCount; 
 	}
 	
