@@ -34,18 +34,17 @@ public class UI {
 
 	// https://stackoverflow.com/questions/2979383/java-clear-the-console
 	public static void clearScreen() {
-	System.out.print("\033[H\033[2J");
-	System.out.flush();
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
 	}
-	
+
 	public static ChessPosition readChessPosition(Scanner sc) {
 		try {
 			String s = sc.nextLine();
 			char column = s.charAt(0);
 			int row = Integer.parseInt(s.substring(1));
 			return new ChessPosition(column, row);
-		} 
-		catch (RuntimeException e) {
+		} catch (RuntimeException e) {
 			throw new InputMismatchException("Error reading chess position.");
 		}
 
@@ -63,7 +62,7 @@ public class UI {
 		System.out.println("  a b c d e f g h");
 	}
 
-	public static void printBoard(ChessPiece[][] pieces,boolean[][] possibleMoves) {
+	public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves) {
 
 		for (int i = 0; i < pieces.length; i++) {
 			System.out.print((8 - i) + " ");
@@ -74,49 +73,57 @@ public class UI {
 		}
 		System.out.println("  a b c d e f g h");
 	}
-	
+
 	public static void printMatch(ChessMatch cm, List<ChessPiece> captured) {
 		printBoard(cm.getPieces());
 		System.out.println();
 		printCapturedPieces(captured);
 		System.out.println();
-		System.out.println("Turn: "+ cm.getTurn());
-		System.out.println("Waiting player: " + cm.getCurrentPlayer());
+		System.out.println("Turn: " + cm.getTurn());
+		if (!cm.getCheckMate()) {
+			System.out.println("Waiting player: " + cm.getCurrentPlayer());
+
+			if (cm.getCheck()) {
+				System.out.println("CHECK!!!");
+			}
+		}
+		else {
+			System.out.println("CHECK MATE!");
+			System.out.println("WINNER: "+ cm.getCurrentPlayer());
+		}
 	}
-	
+
 	private static void printPiece(ChessPiece piece, boolean background) {
-		if(background == true) {
+		if (background == true) {
 			System.out.print(ANSI_GREEN_BACKGROUND);
 		}
 		if (piece == null) {
 			System.out.print("-" + ANSI_RESET);
-		} 
-		else 
-		{
-			if (piece.getColor() == Color.WHITE) 
-			{
+		} else {
+			if (piece.getColor() == Color.WHITE) {
 				System.out.print(ANSI_WHITE + piece + ANSI_RESET);
-			} 
-			
-			else 
-			{
+			}
+
+			else {
 				System.out.print(ANSI_RED + piece + ANSI_RESET);
 			}
-		
+
 		}
 		System.out.print(" ");
 	}
-	
+
 	private static void printCapturedPieces(List<ChessPiece> captured) {
-		List<ChessPiece> white = captured.stream().filter(x-> x.getColor() == Color.WHITE).collect(Collectors.toList());
-		List<ChessPiece> black = captured.stream().filter(x-> x.getColor() == Color.BLACK).collect(Collectors.toList());
-		
+		List<ChessPiece> white = captured.stream().filter(x -> x.getColor() == Color.WHITE)
+				.collect(Collectors.toList());
+		List<ChessPiece> black = captured.stream().filter(x -> x.getColor() == Color.BLACK)
+				.collect(Collectors.toList());
+
 		System.out.println("Captured pieces: ");
 		System.out.print("White: ");
 		System.out.print(ANSI_WHITE);
 		System.out.print(Arrays.toString(white.toArray()));
 		System.out.println(ANSI_RESET);
-		
+
 		System.out.print("Black: ");
 		System.out.print(ANSI_RED);
 		System.out.print(Arrays.toString(black.toArray()));
